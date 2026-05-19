@@ -26,7 +26,7 @@ def send_email(product, discount):
     """
 
     params = {
-        "from": f"Descuentes de Juguetes de Plaza Vea, Metro, SagaFalabella , etc <{EMAIL_FROM}>",
+        "from": f"Descuentos de Juguetes <{EMAIL_FROM}>",
         "to": [EMAIL_TO],
         "subject": subject,
         "html": html

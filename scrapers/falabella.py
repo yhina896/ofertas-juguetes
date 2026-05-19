@@ -15,7 +15,7 @@ def scrape_falabella():
         page = browser.new_page()
 
         page.goto(
-            "https://www.falabella.com.pe/falabella-pe/category/cat720052/Juguetes",
+            "https://www.falabella.com.pe/falabella-pe/category/CATG34943/Jugueteria",
             timeout=60000
         )
 

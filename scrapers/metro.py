@@ -15,7 +15,7 @@ def scrape_metro():
         page = browser.new_page()
 
         page.goto(
-            "https://www.metro.pe/ofertas/juguetes",
+            "https://www.metro.pe/la-jugueteria",
             timeout=60000
         )
 
