@@ -1,4 +1,7 @@
 from scrapers.plaza_vea import scrape_plaza_vea
+from scrapers.metro import scrape_metro
+from scrapers.falabella import scrape_falabella
+
 from notificaciones.telegram_bot import send_telegram
 from notificaciones.email import send_email
 from database.db import init_db, save_product
@@ -14,41 +17,36 @@ def clean_price(price_text):
         return None
 
 
-init_db()
+def process_store(products, store_name):
 
-products = scrape_plaza_vea()
+    print(f"\n🏬 Procesando {store_name} => {len(products)} productos")
 
-print(f"✅ TOTAL PRODUCTOS: {len(products)}")
+    for product in products:
 
+        current_price = clean_price(product.get('price', ''))
+        old_price = clean_price(product.get('old_price', ''))
 
-for product in products:
+        if not current_price or not old_price:
+            continue
 
-    current_price = clean_price(product.get('price', ''))
-    old_price = clean_price(product.get('old_price', ''))
+        if old_price <= 0:
+            continue
 
-    if not current_price or not old_price:
-        print("⚠️ Producto sin precios válidos")
-        continue
+        discount = ((old_price - current_price) / old_price) * 100
 
-    if old_price <= 0:
-        continue
+        print(f"🟢 {product.get('title')} => {discount:.2f}%")
 
-    discount = ((old_price - current_price) / old_price) * 100
+        if discount <= 10 or discount > 95:
+            continue
 
-    print(f"🟢 {product.get('title')} => {discount:.2f}%")
+        # IMPORTANTE: agregar tienda al producto
+        product["store"] = store_name
 
-    if discount <= 10:
-        continue
-
-    if discount > 95:
-        continue
-
-
-    # -------------------------
-    # SIEMPRE ENVIAR TELEGRAM
-    # -------------------------
-    msg = f"""
-🔥 OFERTA JUGUETE
+        # -------------------------
+        # SIEMPRE ENVIAR TELEGRAM
+        # -------------------------
+        msg = f"""
+🔥 OFERTA JUGUETES - {store_name}
 
 🧸 {product.get('title')}
 
@@ -61,18 +59,29 @@ for product in products:
 🔗 {product.get('link')}
 """
 
-    print("📲 ENVIANDO TELEGRAM...")
-    send_telegram(msg)
+        print("📲 ENVIANDO TELEGRAM...")
+        send_telegram(msg)
 
-    print("📧 ENVIANDO EMAIL...")
-    send_email(product, discount)
+        print("📧 ENVIANDO EMAIL...")
+        send_email(product, discount)
 
-    # -------------------------
-    # SOLO GUARDAR SI ES NUEVO
-    # -------------------------
-    is_new = save_product(product)
+        # -------------------------
+        # SOLO GUARDAR SI ES NUEVO
+        # -------------------------
+        is_new = save_product(product)
 
-    if is_new:
-        print("🆕 Producto nuevo guardado")
-    else:
-        print("🔁 Producto ya existía (no se guarda duplicado)")
+        if is_new:
+            print("🆕 Producto nuevo guardado")
+        else:
+            print("🔁 Producto ya existía")
+
+
+# -------------------------
+# MAIN
+# -------------------------
+
+init_db()
+
+process_store(scrape_plaza_vea(), "Plaza Vea")
+process_store(scrape_metro(), "Metro")
+process_store(scrape_falabella(), "Falabella")
