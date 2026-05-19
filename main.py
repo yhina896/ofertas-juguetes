@@ -11,8 +11,16 @@ import re
 
 def clean_price(price_text):
     try:
-        number = re.sub(r'[^0-9.]', '', price_text)
+        if not price_text:
+            return None
+
+        number = re.sub(r'[^0-9.]', '', str(price_text))
+
+        if number == "":
+            return None
+
         return float(number)
+
     except:
         return None
 
@@ -26,7 +34,7 @@ def process_store(products, store_name):
         current_price = clean_price(product.get('price', ''))
         old_price = clean_price(product.get('old_price', ''))
 
-        if not current_price or not old_price:
+        if current_price is None or old_price is None:
             continue
 
         if old_price <= 0:
