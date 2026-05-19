@@ -9,7 +9,8 @@ def scrape_plaza_vea():
     with sync_playwright() as p:
 
         browser = p.chromium.launch(
-            headless=False
+            headless=False,
+            args=["--no-sandbox", "--disable-setuid-sandbox"]
         )
 
         page = browser.new_page()

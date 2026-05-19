@@ -24,9 +24,9 @@ jobs:
         run: |
           pip install -r requirements.txt
 
-      - name: Install Playwright
+      - name: Install Playwright Browsers
         run: |
-          playwright install
+          playwright install --with-deps
 
       - name: Run scraper
         run: |
