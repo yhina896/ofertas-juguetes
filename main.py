@@ -1,5 +1,6 @@
 from scrapers.plaza_vea import scrape_plaza_vea
 from notificaciones.telegram_bot import send_telegram
+from notificaciones.email import send_email
 from database.db import init_db, save_product
 
 import re
@@ -63,6 +64,8 @@ for product in products:
     print("📲 ENVIANDO TELEGRAM...")
     send_telegram(msg)
 
+    print("📧 ENVIANDO EMAIL...")
+    send_email(product, discount)
 
     # -------------------------
     # SOLO GUARDAR SI ES NUEVO

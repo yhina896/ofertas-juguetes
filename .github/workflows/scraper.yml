@@ -2,7 +2,7 @@ name: Scraper
 
 on:
   schedule:
-    - cron: '*/5 * * * *' 
+    - cron: '0 14 * * 5,6'  # viernes y sábado 9AM Perú
 
   workflow_dispatch:
 
@@ -29,12 +29,11 @@ jobs:
           playwright install --with-deps
 
       - name: Run scraper
-        run: |
-          python main.py
-
-      - name: Ejecutar scraper
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          EMAIL_TO: ${{ secrets.EMAIL_TO }}
+          EMAIL_FROM: ${{ secrets.EMAIL_FROM }}
         run: |
           python main.py
