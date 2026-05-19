@@ -36,7 +36,7 @@ for product in products:
 
     print(f"🟢 {product.get('title')} => {discount:.2f}%")
 
-    if discount <= 20:
+    if discount <= 10:
         continue
 
     if discount > 95:
