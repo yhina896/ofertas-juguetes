@@ -25,7 +25,6 @@ def scrape_metro():
         page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
         page.wait_for_timeout(5000)
 
-        # detectar cards (Metro usa muchos divs, buscamos links con productos)
         cards = page.locator("a")
 
         count = cards.count()
@@ -58,34 +57,72 @@ def scrape_metro():
                 if not text or len(text) < 10:
                     continue
 
-                # precios
-                prices = re.findall(r'S/\s?\d+[.,]?\d*', text)
+                # -----------------------------
+                # 🔥 NUEVA LÓGICA DE PRECIOS METRO
+                # -----------------------------
+
+                text_lower = text.lower()
+
+                price = None
+                old_price = None
+
+                # buscar precio online
+                online_match = re.search(
+                    r'precio\s*online.*?S/\s?(\d+[.,]?\d*)',
+                    text_lower
+                )
+
+                # buscar precio regular
+                regular_match = re.search(
+                    r'precio\s*regular.*?S/\s?(\d+[.,]?\d*)',
+                    text_lower
+                )
+
+                # fallback general por regex
+                all_prices = re.findall(r'S/\s?\d+[.,]?\d*', text)
 
                 numeric_prices = []
 
-                for ptxt in prices:
+                for ptxt in all_prices:
                     try:
                         val = float(re.sub(r'[^0-9.]', '', ptxt))
                         numeric_prices.append(val)
                     except:
                         pass
 
-                if len(numeric_prices) == 0:
+                numeric_prices = sorted(set(numeric_prices))
+
+                # -----------------------------
+                # ASIGNACIÓN INTELIGENTE
+                # -----------------------------
+
+                if online_match:
+                    price = float(online_match.group(1).replace(",", "."))
+                elif len(numeric_prices) > 0:
+                    price = numeric_prices[0]
+
+                if regular_match:
+                    old_price = float(regular_match.group(1).replace(",", "."))
+                elif len(numeric_prices) > 1:
+                    old_price = numeric_prices[-1]
+                elif len(numeric_prices) == 1:
+                    old_price = numeric_prices[0]
+
+                if not price or not old_price:
                     continue
 
-                numeric_prices.sort()
-
-                price = f"S/ {numeric_prices[0]:.2f}"
-                old_price = f"S/ {numeric_prices[-1]:.2f}" if len(numeric_prices) > 1 else price
-
-                # título (heurística simple)
+                # -----------------------------
+                # TITULO
+                # -----------------------------
                 lines = text.split("\n")
-                title = next((l.strip() for l in lines if len(l.strip()) > 8 and "S/" not in l), None)
+                title = next(
+                    (l.strip() for l in lines if len(l.strip()) > 8 and "S/" not in l),
+                    None
+                )
 
                 if not title:
                     continue
 
-                # filtro juguetes
                 keywords = [
                     "lego", "barbie", "hot wheels", "nerf",
                     "muñeca", "juguete", "peluche", "hasbro",
@@ -97,8 +134,8 @@ def scrape_metro():
 
                 product = {
                     "title": title,
-                    "price": price,
-                    "old_price": old_price,
+                    "price": f"S/ {price:.2f}",
+                    "old_price": f"S/ {old_price:.2f}",
                     "link": href
                 }
 
