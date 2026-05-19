@@ -71,7 +71,7 @@ def process_store(products, store_name):
         send_telegram(msg)
 
         print("📧 ENVIANDO EMAIL...")
-        send_email(product, discount)
+        send_email(product, discount, store_name)
 
         # -------------------------
         # SOLO GUARDAR SI ES NUEVO

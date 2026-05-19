@@ -7,14 +7,16 @@ EMAIL_TO = os.getenv("EMAIL_TO")
 EMAIL_FROM = os.getenv("EMAIL_FROM")
 
 
-def send_email(product, discount):
+def send_email(product, discount, store_name):
 
-    subject = f"🔥 Oferta {discount:.2f}% - {product['title']}"
+    subject = f"🔥 OFERTA {discount:.2f}% - {store_name}"
 
     html = f"""
-    <h2>🔥 OFERTA JUGUETE</h2>
+    <h2>🔥 OFERTA JUGUETES - {store_name}</h2>
 
     <p><b>🧸 {product['title']}</b></p>
+
+    <p>🏪 Tienda: {store_name}</p>
 
     <p>💲 Precio: {product['price']}</p>
 
