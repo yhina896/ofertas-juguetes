@@ -1,0 +1,32 @@
+from playwright.sync_api import sync_playwright
+
+def scrape_plaza_vea():
+
+    products = []
+
+    with sync_playwright() as p:
+
+        browser = p.chromium.launch(headless=True)
+
+        page = browser.new_page()
+
+        page.goto(
+            "https://www.plazavea.com.pe/juguetes",
+            timeout=60000
+        )
+
+        page.wait_for_timeout(5000)
+
+        titles = page.locator("span").all_inner_texts()
+
+        for title in titles[:20]:
+
+            if len(title) > 10:
+
+                products.append({
+                    "title": title
+                })
+
+        browser.close()
+
+    return products
