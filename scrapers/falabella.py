@@ -90,7 +90,16 @@ def scrape_falabella():
                 keywords = [
                     "lego", "barbie", "hot wheels", "nerf",
                     "muñeca", "juguete", "disney", "fisher",
-                    "hasbro", "peluche", "carro"
+                    "hasbro", "peluche", "carro", "hot wheels",
+                    "peppa","play doh","rompecabezas","pistola",
+                    "pj mask","cocina","pista de carreras","set de juego casa",
+                    "bonnie","baby","cute","monster","frozen","huanger","nini",
+                    "princesas","fashion","litle features","funko","vehiculo",
+                    "play set supermercado","triciclo","supermarket","pack de slime",
+                    "figura de colección","mini coleccionables","super mario",
+                    "perrito","set teens unicornio","pista","set estacion","set de juego",
+                    "cocina","casa","hello kitty","pistas","camara","bloques","caja de herramientas",
+                    "reborn","karaoke","belleza"
                 ]
 
                 if not any(k in title.lower() for k in keywords):

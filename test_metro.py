@@ -12,3 +12,5 @@ for p in products:
     print("OLD PRICE:", p["old_price"])
     print("LINK:", p["link"])
     print("--------------------")
+
+#1001467
