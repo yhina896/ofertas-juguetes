@@ -2,7 +2,9 @@ name: Scraper
 
 on:
   schedule:
-    - cron: '0 14 * * 5,6'  # viernes y sábado 9AM Perú
+     - cron: '0 14 * * *'  # 9:00 AM Perú 
+     - cron: '0 2 * * *'   # 9:00 PM Perú
+
 
   workflow_dispatch:
 

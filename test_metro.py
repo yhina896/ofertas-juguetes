@@ -1,16 +1,10 @@
-from scrapers.metro import scrape_metro
+import os
 
-products = scrape_metro()
+os.environ["TELEGRAM_TOKEN"] = "8899955127:AAHBLtiN-L2-LZloAPt1ixh62jU4T6BzIx4"
+os.environ["TELEGRAM_CHAT_ID"] = "-1003976574119"
 
-print("\n====================")
-print("TOTAL PRODUCTOS:", len(products))
-print("====================\n")
+from notificaciones.telegram_bot import send_telegram
 
-for p in products:
-    print("TITLE:", p["title"])
-    print("PRICE:", p["price"])
-    print("OLD PRICE:", p["old_price"])
-    print("LINK:", p["link"])
-    print("--------------------")
+send_telegram("Prueba desde Python")
 
 #1001467
